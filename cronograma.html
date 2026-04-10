@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cronograma CNH — Exame Teórico DETRAN</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #14171f;
+    --surface2: #1c2030;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #e8eaf0;
+    --muted: #7a8099;
+    --accent: #4f7cff;
+    --accent2: #7c5cff;
+    --green: #2dd4a0;
+    --green-bg: rgba(45,212,160,0.08);
+    --amber: #f59e0b;
+    --amber-bg: rgba(245,158,11,0.08);
+    --red: #f87171;
+    --red-bg: rgba(248,113,113,0.08);
+    --blue-bg: rgba(79,124,255,0.08);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,15,20,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+
+  .progress-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .progress-bar-wrap {
+    width: 160px;
+    height: 4px;
+    background: var(--surface2);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--green));
+    border-radius: 99px;
+    transition: width 0.5s ease;
+  }
+
+  .hero {
+    padding: 4rem 2rem 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--blue-bg);
+    border: 1px solid rgba(79,124,255,0.2);
+    padding: 5px 14px;
+    border-radius: 99px;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--accent), var(--green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 500px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 99px;
+  }
+
+  .stat-pill strong { color: var(--text); }
+
+  .week-nav {
+    max-width: 1100px;
+    margin: 0 auto 2rem;
+    padding: 0 2rem;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .week-tab {
+    padding: 8px 20px;
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+
+  .week-tab.active, .week-tab:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  .week-section {
+    max-width: 1100px;
+    margin: 0 auto 3rem;
+    padding: 0 2rem;
+    display: none;
+  }
+
+  .week-section.visible { display: block; }
+
+  .week-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+
+  .week-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3rem;
+    color: rgba(255,255,255,0.07);
+    line-height: 1;
+  }
+
+  .week-info h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .week-info p {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .days-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+
+  .day-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+  }
+
+  .day-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+
+  .day-card.completed { border-color: rgba(45,212,160,0.25); background: rgba(45,212,160,0.03); }
+  .day-card.exam-day { border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.04); }
+  .day-card.rest { opacity: 0.5; }
+  .day-card.today { border-color: rgba(79,124,255,0.4); }
+
+  .day-card-top {
+    padding: 1rem 1.1rem 0.8rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .day-label {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .day-weekday {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--muted);
+  }
+
+  .day-date {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .day-card.today .day-date { color: var(--accent); }
+  .day-card.exam-day .day-date { color: var(--amber); }
+
+  .day-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 99px;
+  }
+
+  .badge-study { background: var(--blue-bg); color: var(--accent); border: 1px solid rgba(79,124,255,0.2); }
+  .badge-review { background: rgba(124,92,255,0.1); color: var(--accent2); border: 1px solid rgba(124,92,255,0.2); }
+  .badge-exam { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
+  .badge-rest { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+
+  .day-card-body { padding: 1rem 1.1rem; }
+
+  .day-topic {
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .resources { display: flex; flex-direction: column; gap: 7px; }
+
+  .resource-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: var(--radius-sm);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .resource-item:hover { border-color: var(--border2); background: rgba(255,255,255,0.04); }
+
+  .resource-item.done {
+    background: var(--green-bg);
+    border-color: rgba(45,212,160,0.25);
+  }
+
+  .resource-icon {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .icon-video { background: rgba(248,113,113,0.15); }
+  .icon-sim { background: rgba(79,124,255,0.15); }
+  .icon-doc { background: rgba(245,158,11,0.15); }
+
+  .resource-info { flex: 1; min-width: 0; }
+
+  .resource-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+  }
+
+  .resource-item.done .resource-title { color: var(--green); }
+
+  .resource-type {
+    font-size: 11px;
+    color: var(--muted);
+    display: block;
+  }
+
+  .check-btn {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border2);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    color: transparent;
+    font-size: 11px;
+  }
+
+  .resource-item.done .check-btn {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+
+  .resource-link {
+    font-size: 10px;
+    color: var(--accent);
+    text-decoration: none;
+    flex-shrink: 0;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: var(--blue-bg);
+    transition: opacity 0.15s;
+  }
+
+  .resource-link:hover { opacity: 0.75; }
+
+  .done-all-badge {
+    display: none;
+    position: absolute;
+    top: 10px; right: 10px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--green);
+    background: var(--green-bg);
+    border: 1px solid rgba(45,212,160,0.25);
+    padding: 3px 9px;
+    border-radius: 99px;
+  }
+
+  .day-card.all-done .done-all-badge { display: block; }
+
+  .exam-special {
+    padding: 1.2rem;
+    text-align: center;
+  }
+
+  .exam-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .exam-title { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--amber); margin-bottom: 0.4rem; }
+  .exam-sub { font-size: 13px; color: var(--muted); }
+
+  footer {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--muted);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .reset-btn {
+    padding: 8px 18px;
+    border-radius: 99px;
+    background: var(--red-bg);
+    border: 1px solid rgba(248,113,113,0.2);
+    color: var(--red);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: opacity 0.2s;
+  }
+
+  .reset-btn:hover { opacity: 0.7; }
+
+  .rest-msg {
+    padding: 1.5rem 1.1rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .rest-emoji { font-size: 2rem; margin-bottom: 0.4rem; display: block; }
+
+  @media (max-width: 600px) {
+    header { padding: 0 1rem; }
+    .hero { padding: 3rem 1rem 2rem; }
+    .week-nav, .week-section, footer { padding: 0 1rem; }
+    .days-grid { grid-template-columns: 1fr; }
+    .progress-header .progress-bar-wrap { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    Cronograma CNH
+  </div>
+  <div class="progress-header">
+    <span id="progress-text">0 / 0 concluídos</span>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">📋 Exame Teórico DETRAN Bahia</div>
+  <h1>Seu caminho até a <span>aprovação</span></h1>
+  <p class="hero-sub">Cronograma de 26 dias de estudo + 4 dias de descanso · Vídeo-aulas e simulados organizados por dia. Marque cada atividade como concluída conforme avança.</p>
+  <div class="stats-row">
+    <div class="stat-pill">📅 <strong>09 abr</strong> início</div>
+    <div class="stat-pill">🎯 <strong>04 mai</strong> prova</div>
+    <div class="stat-pill">📚 <strong>26 dias</strong> de estudo</div>
+    <div class="stat-pill">✅ <strong>21/30</strong> para passar</div>
+  </div>
+</div>
+
+<nav class="week-nav">
+  <button class="week-tab active" onclick="showWeek(1, this)">Semana 1 (09-15/04)</button>
+  <button class="week-tab" onclick="showWeek(2, this)">Semana 2 (16-22/04)</button>
+  <button class="week-tab" onclick="showWeek(3, this)">Semana 3 (23-29/04)</button>
+  <button class="week-tab" onclick="showWeek(4, this)">Semana 4 (30/04-04/05)</button>
+</nav>
+
+<!-- ============ SEMANA 1: 09 a 15 de abril ============ -->
+<section class="week-section visible" id="week-1">
+  <div class="week-header">
+    <div class="week-num">01</div>
+    <div class="week-info">
+      <h2>Fundamentos — Legislação e Sinalização</h2>
+      <p>09 a 15 de abril · Conceitos do CTB, habilitação e tipos de sinalização</p>
+    </div>
+  </div>
+  <div class="days-grid">
+
+    <!-- 09/04 - Quinta -->
+    <div class="day-card today" id="card-09">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Quinta-feira</span>
+          <span class="day-date">09/04</span>
+        </div>
+        <span class="day-badge badge-study">Estudo</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Legislação de trânsito — conceitos básicos e CTB</p>
+        <div class="resources">
+          <div class="resource-item" id="r-09-1">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">LegTransito – Introdução à Legislação</span>
+              <span class="resource-type">Vídeo-aula · YouTube</span>
+            </div>
+            <a href="https://www.youtube.com/c/LegTransito" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-09-1','card-09')">✓</button>
+          </div>
+          <div class="resource-item" id="r-09-2">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">Curso Teórico Oficial – Ministério dos Transportes</span>
+              <span class="resource-type">Vídeo + Material oficial</span>
+            </div>
+            <a href="https://www.gov.br/transportes/pt-br/assuntos/noticias/2025/12/cnh-do-brasil-como-solicitar-a-primeira-habilitacao-pelo-aplicativo" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-09-2','card-09')">✓</button>
+          </div>
+          <div class="resource-item" id="r-09-3">
+            <div class="resource-icon icon-doc">📄</div>
+            <div class="resource-info">
+              <span class="resource-title">CTB Completo e Atualizado 2026</span>
+              <span class="resource-type">Leitura · AprovaDETRAN</span>
+            </div>
+            <a href="https://www.aprovadetran.com.br/ctb" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-09-3','card-09')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10/04 - Sexta -->
+    <div class="day-card" id="card-10">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Sexta-feira</span>
+          <span class="day-date">10/04</span>
+        </div>
+        <span class="day-badge badge-study">Estudo</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Habilitação: categorias, validade e renovação</p>
+        <div class="resources">
+          <div class="resource-item" id="r-10-1">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">LegTransito – Categorias de Habilitação</span>
+              <span class="resource-type">Vídeo-aula · YouTube</span>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=legtransito+categorias+habilitacao+cnh" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-10-1','card-10')">✓</button>
+          </div>
+          <div class="resource-item" id="r-10-2">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">Autoescola Online – Módulo Habilitação</span>
+              <span class="resource-type">Vídeo-aula gratuita</span>
+            </div>
+            <a href="https://www.autoescolaonline.net/video-aulas/" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-10-2','card-10')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11/04 - Sábado -->
+    <div class="day-card" id="card-11">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Sábado</span>
+          <span class="day-date">11/04</span>
+        </div>
+        <span class="day-badge badge-study">Estudo</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Sinalização vertical: placas de regulamentação</p>
+        <div class="resources">
+          <div class="resource-item" id="r-11-1">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">LegTransito – Placas de Regulamentação</span>
+              <span class="resource-type">Vídeo-aula · YouTube</span>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=legtransito+placas+regulamenta%C3%A7%C3%A3o+sinaliza%C3%A7%C3%A3o" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-11-1','card-11')">✓</button>
+          </div>
+          <div class="resource-item" id="r-11-2">
+            <div class="resource-icon icon-doc">📄</div>
+            <div class="resource-info">
+              <span class="resource-title">Apostila de Sinalização (PDF)</span>
+              <span class="resource-type">Material de leitura</span>
+            </div>
+            <a href="https://www.autoescolaonline.net/wp-content/uploads/2017/02/03-sinalizacao.pdf" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-11-2','card-11')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12/04 - DOMINGO DESCANSO -->
+    <div class="day-card rest" id="card-12">
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Domingo</span>
+          <span class="day-date">12/04</span>
+        </div>
+        <span class="day-badge badge-rest">Descanso</span>
+      </div>
+      <div class="rest-msg">
+        <span class="rest-emoji">😴</span>
+        Dia de descanso — deixe o cérebro fixar o conteúdo!
+      </div>
+    </div>
+
+    <!-- 13/04 - Segunda -->
+    <div class="day-card" id="card-13">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Segunda-feira</span>
+          <span class="day-date">13/04</span>
+        </div>
+        <span class="day-badge badge-study">Estudo</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Sinalização vertical: placas de advertência e indicação</p>
+        <div class="resources">
+          <div class="resource-item" id="r-13-1">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">LegTransito – Placas de Advertência</span>
+              <span class="resource-type">Vídeo-aula · YouTube</span>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=legtransito+placas+advert%C3%AAncia+indica%C3%A7%C3%A3o" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-13-1','card-13')">✓</button>
+          </div>
+          <div class="resource-item" id="r-13-2">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">Trânsito Escola – Videoaulas Sinalização</span>
+              <span class="resource-type">Vídeo-aula gratuita</span>
+            </div>
+            <a href="https://transitoescola.blogspot.com/p/video-aula.html" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-13-2','card-13')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 14/04 - Terça -->
+    <div class="day-card" id="card-14">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Terça-feira</span>
+          <span class="day-date">14/04</span>
+        </div>
+        <span class="day-badge badge-study">Estudo</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Sinalização horizontal: faixas, marcações e setas</p>
+        <div class="resources">
+          <div class="resource-item" id="r-14-1">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">LegTransito – Sinalização Horizontal</span>
+              <span class="resource-type">Vídeo-aula · YouTube</span>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=legtransito+sinaliza%C3%A7%C3%A3o+horizontal+faixas" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-14-1','card-14')">✓</button>
+          </div>
+          <div class="resource-item" id="r-14-2">
+            <div class="resource-icon icon-doc">📄</div>
+            <div class="resource-info">
+              <span class="resource-title">Apostila Sinalização Completa (PDF)</span>
+              <span class="resource-type">Material de leitura</span>
+            </div>
+            <a href="https://www.autoescolaonline.net/wp-content/uploads/2017/02/03-sinalizacao.pdf" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-14-2','card-14')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 15/04 - Quarta REVISÃO -->
+    <div class="day-card" id="card-15">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Quarta-feira</span>
+          <span class="day-date">15/04</span>
+        </div>
+        <span class="day-badge badge-review">Revisão</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Revisão semana 1 + simulado de sinalização</p>
+        <div class="resources">
+          <div class="resource-item" id="r-15-1">
+            <div class="resource-icon icon-sim">🎯</div>
+            <div class="resource-info">
+              <span class="resource-title">Simulado de Sinalização – EstudaCNH</span>
+              <span class="resource-type">Simulado gratuito</span>
+            </div>
+            <a href="https://www.estudacnh.com.br/simulado/detran" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-15-1','card-15')">✓</button>
+          </div>
+          <div class="resource-item" id="r-15-2">
+            <div class="resource-icon icon-sim">🎯</div>
+            <div class="resource-info">
+              <span class="resource-title">Simulado Geral – AprovaDETRAN</span>
+              <span class="resource-type">Simulado gratuito</span>
+            </div>
+            <a href="https://www.aprovadetran.com.br/ctb" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-15-2','card-15')">✓</button>
+          </div>
+          <div class="resource-item" id="r-15-3">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">LegTransito – Revisão de Sinalização</span>
+              <span class="resource-type">Vídeo-aula · YouTube</span>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=legtransito+revis%C3%A3o+sinaliza%C3%A7%C3%A3o+detran" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-15-3','card-15')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ SEMANA 2: 16 a 22 de abril ============ -->
+<section class="week-section" id="week-2">
+  <div class="week-header">
+    <div class="week-num">02</div>
+    <div class="week-info">
+      <h2>Circulação e Segurança</h2>
+      <p>16 a 22 de abril · Normas de circulação, estacionamento, álcool, primeiros socorros</p>
+    </div>
+  </div>
+  <div class="days-grid">
+
+    <!-- 16/04 - Quinta -->
+    <div class="day-card" id="card-16">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Quinta-feira</span>
+          <span class="day-date">16/04</span>
+        </div>
+        <span class="day-badge badge-study">Estudo</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Regras de circulação: velocidades e ultrapassagem</p>
+        <div class="resources">
+          <div class="resource-item" id="r-16-1">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">LegTransito – Velocidade e Ultrapassagem</span>
+              <span class="resource-type">Vídeo-aula · YouTube</span>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=legtransito+normas+circula%C3%A7%C3%A3o+velocidade+ultrapassagem" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-16-1','card-16')">✓</button>
+          </div>
+          <div class="resource-item" id="r-16-2">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">Autoescola Online – Normas de Circulação</span>
+              <span class="resource-type">Vídeo-aula gratuita</span>
+            </div>
+            <a href="https://www.autoescolaonline.net/video-aulas/" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-16-2','card-16')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 17/04 - Sexta -->
+    <div class="day-card" id="card-17">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Sexta-feira</span>
+          <span class="day-date">17/04</span>
+        </div>
+        <span class="day-badge badge-study">Estudo</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Preferência de passagem, cruzamentos e rotatórias</p>
+        <div class="resources">
+          <div class="resource-item" id="r-17-1">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">LegTransito – Cruzamentos e Preferência</span>
+              <span class="resource-type">Vídeo-aula · YouTube</span>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=legtransito+cruzamentos+prefer%C3%AAncia+passagem+rotat%C3%B3ria" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-17-1','card-17')">✓</button>
+          </div>
+          <div class="resource-item" id="r-17-2">
+            <div class="resource-icon icon-sim">🎯</div>
+            <div class="resource-info">
+              <span class="resource-title">Simulado de Circulação – EstudaCNH</span>
+              <span class="resource-type">Simulado gratuito</span>
+            </div>
+            <a href="https://www.estudacnh.com.br/simulado/detran" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-17-2','card-17')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 18/04 - Sábado -->
+    <div class="day-card" id="card-18">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Sábado</span>
+          <span class="day-date">18/04</span>
+        </div>
+        <span class="day-badge badge-study">Estudo</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Estacionamento, parada e garagem — proibições</p>
+        <div class="resources">
+          <div class="resource-item" id="r-18-1">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">LegTransito – Estacionamento e Parada</span>
+              <span class="resource-type">Vídeo-aula · YouTube</span>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=legtransito+estacionamento+parada+proibi%C3%A7%C3%B5es" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-18-1','card-18')">✓</button>
+          </div>
+          <div class="resource-item" id="r-18-2">
+            <div class="resource-icon icon-doc">📄</div>
+            <div class="resource-info">
+              <span class="resource-title">Artigos mais cobrados – Cursos de Trânsito</span>
+              <span class="resource-type">Leitura complementar</span>
+            </div>
+            <a href="https://cursosdetransito.com.br/2025/05/29/legislacao-transito-prova-detran/" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-18-2','card-18')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 19/04 - DOMINGO DESCANSO -->
+    <div class="day-card rest" id="card-19">
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Domingo</span>
+          <span class="day-date">19/04</span>
+        </div>
+        <span class="day-badge badge-rest">Descanso</span>
+      </div>
+      <div class="rest-msg">
+        <span class="rest-emoji">😴</span>
+        Dia de descanso — curta o domingo!
+      </div>
+    </div>
+
+    <!-- 20/04 - Segunda -->
+    <div class="day-card" id="card-20">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Segunda-feira</span>
+          <span class="day-date">20/04</span>
+        </div>
+        <span class="day-badge badge-study">Estudo</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Álcool e direção + uso de celular ao volante</p>
+        <div class="resources">
+          <div class="resource-item" id="r-20-1">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">LegTransito – Álcool e Direção (Art. 165 CTB)</span>
+              <span class="resource-type">Vídeo-aula · YouTube</span>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=legtransito+alcool+dire%C3%A7%C3%A3o+art+165" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-20-1','card-20')">✓</button>
+          </div>
+          <div class="resource-item" id="r-20-2">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">LegTransito – Celular e Infração de Trânsito</span>
+              <span class="resource-type">Vídeo-aula · YouTube</span>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=legtransito+celular+infra%C3%A7%C3%A3o+volante" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-20-2','card-20')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 21/04 - Terça -->
+    <div class="day-card" id="card-21">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Terça-feira</span>
+          <span class="day-date">21/04</span>
+        </div>
+        <span class="day-badge badge-study">Estudo</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Primeiros socorros no trânsito</p>
+        <div class="resources">
+          <div class="resource-item" id="r-21-1">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">LegTransito – Primeiros Socorros</span>
+              <span class="resource-type">Vídeo-aula · YouTube</span>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=legtransito+primeiros+socorros+tr%C3%A2nsito+detran" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-21-1','card-21')">✓</button>
+          </div>
+          <div class="resource-item" id="r-21-2">
+            <div class="resource-icon icon-sim">🎯</div>
+            <div class="resource-info">
+              <span class="resource-title">Simulado Primeiros Socorros – Clube DETRAN</span>
+              <span class="resource-type">Simulado específico</span>
+            </div>
+            <a href="https://clubedetran.com.br/simulado-detran-primeiros-socorros/" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-21-2','card-21')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 22/04 - Quarta REVISÃO -->
+    <div class="day-card" id="card-22">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Quarta-feira</span>
+          <span class="day-date">22/04</span>
+        </div>
+        <span class="day-badge badge-review">Revisão</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Revisão semana 2 + simulado de circulação</p>
+        <div class="resources">
+          <div class="resource-item" id="r-22-1">
+            <div class="resource-icon icon-sim">🎯</div>
+            <div class="resource-info">
+              <span class="resource-title">Simulado Geral – EstudaCNH</span>
+              <span class="resource-type">Simulado gratuito</span>
+            </div>
+            <a href="https://www.estudacnh.com.br/simulado/detran" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-22-1','card-22')">✓</button>
+          </div>
+          <div class="resource-item" id="r-22-2">
+            <div class="resource-icon icon-sim">🎯</div>
+            <div class="resource-info">
+              <span class="resource-title">Simulado AprovaDETRAN</span>
+              <span class="resource-type">Simulado gratuito</span>
+            </div>
+            <a href="https://www.aprovadetran.com.br/ctb" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-22-2','card-22')">✓</button>
+          </div>
+          <div class="resource-item" id="r-22-3">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">LegTransito – Segredos para Passar de 1ª</span>
+              <span class="resource-type">Vídeo de revisão</span>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=legtransito+segredos+passar+primeira+prova+detran" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-22-3','card-22')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ SEMANA 3: 23 a 29 de abril ============ -->
+<section class="week-section" id="week-3">
+  <div class="week-header">
+    <div class="week-num">03</div>
+    <div class="week-info">
+      <h2>Mecânica, Infrações e Meio Ambiente</h2>
+      <p>23 a 29 de abril · Mecânica básica, infrações, direção defensiva</p>
+    </div>
+  </div>
+  <div class="days-grid">
+
+    <!-- 23/04 - Quinta -->
+    <div class="day-card" id="card-23">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Quinta-feira</span>
+          <span class="day-date">23/04</span>
+        </div>
+        <span class="day-badge badge-study">Estudo</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Mecânica básica: pneus, freios, luzes e suspensão</p>
+        <div class="resources">
+          <div class="resource-item" id="r-23-1">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">LegTransito – Mecânica Básica de Veículos</span>
+              <span class="resource-type">Vídeo-aula · YouTube</span>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=legtransito+mec%C3%A2nica+b%C3%A1sica+ve%C3%ADculos+detran" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-23-1','card-23')">✓</button>
+          </div>
+          <div class="resource-item" id="r-23-2">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">Autoescola Online – Módulo Mecânica</span>
+              <span class="resource-type">Vídeo-aula gratuita</span>
+            </div>
+            <a href="https://www.autoescolaonline.net/video-aulas/" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-23-2','card-23')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 24/04 - Sexta -->
+    <div class="day-card" id="card-24">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Sexta-feira</span>
+          <span class="day-date">24/04</span>
+        </div>
+        <span class="day-badge badge-study">Estudo</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Infrações, penalidades e pontos na CNH</p>
+        <div class="resources">
+          <div class="resource-item" id="r-24-1">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">LegTransito – Infrações e Penalidades</span>
+              <span class="resource-type">Vídeo-aula · YouTube</span>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=legtransito+infra%C3%A7%C3%B5es+penalidades+pontos+cnh" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-24-1','card-24')">✓</button>
+          </div>
+          <div class="resource-item" id="r-24-2">
+            <div class="resource-icon icon-doc">📄</div>
+            <div class="resource-info">
+              <span class="resource-title">Artigos mais cobrados na prova – Cursos de Trânsito</span>
+              <span class="resource-type">Leitura complementar</span>
+            </div>
+            <a href="https://cursosdetransito.com.br/2025/05/29/legislacao-transito-prova-detran/" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-24-2','card-24')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 25/04 - Sábado -->
+    <div class="day-card" id="card-25">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Sábado</span>
+          <span class="day-date">25/04</span>
+        </div>
+        <span class="day-badge badge-study">Estudo</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Direção defensiva e conduta no trânsito</p>
+        <div class="resources">
+          <div class="resource-item" id="r-25-1">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">LegTransito – Direção Defensiva</span>
+              <span class="resource-type">Vídeo-aula · YouTube</span>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=legtransito+dire%C3%A7%C3%A3o+defensiva+detran" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-25-1','card-25')">✓</button>
+          </div>
+          <div class="resource-item" id="r-25-2">
+            <div class="resource-icon icon-sim">🎯</div>
+            <div class="resource-info">
+              <span class="resource-title">Simulado Direção Defensiva – Clube DETRAN</span>
+              <span class="resource-type">Simulado específico</span>
+            </div>
+            <a href="https://clubedetran.com.br/simulado-detran-primeiros-socorros/" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-25-2','card-25')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 26/04 - DOMINGO DESCANSO -->
+    <div class="day-card rest" id="card-26">
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Domingo</span>
+          <span class="day-date">26/04</span>
+        </div>
+        <span class="day-badge badge-rest">Descanso</span>
+      </div>
+      <div class="rest-msg">
+        <span class="rest-emoji">🧘</span>
+        Descanse para a reta final!
+      </div>
+    </div>
+
+    <!-- 27/04 - Segunda -->
+    <div class="day-card" id="card-27">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Segunda-feira</span>
+          <span class="day-date">27/04</span>
+        </div>
+        <span class="day-badge badge-study">Estudo</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Meio ambiente, cidadania e transporte de carga</p>
+        <div class="resources">
+          <div class="resource-item" id="r-27-1">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">LegTransito – Meio Ambiente e Trânsito</span>
+              <span class="resource-type">Vídeo-aula · YouTube</span>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=legtransito+meio+ambiente+tr%C3%A2nsito+cidadania" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-27-1','card-27')">✓</button>
+          </div>
+          <div class="resource-item" id="r-27-2">
+            <div class="resource-icon icon-doc">📄</div>
+            <div class="resource-info">
+              <span class="resource-title">CTB – Capítulo sobre Transporte de Carga</span>
+              <span class="resource-type">Leitura complementar</span>
+            </div>
+            <a href="https://www.aprovadetran.com.br/ctb" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-27-2','card-27')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 28/04 - Terça -->
+    <div class="day-card" id="card-28">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Terça-feira</span>
+          <span class="day-date">28/04</span>
+        </div>
+        <span class="day-badge badge-study">Estudo</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Revisão de acidentes e noções de proteção ambiental</p>
+        <div class="resources">
+          <div class="resource-item" id="r-28-1">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">LegTransito – Acidentes e Procedimentos</span>
+              <span class="resource-type">Vídeo-aula · YouTube</span>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=legtransito+acidentes+procedimentos+detran" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-28-1','card-28')">✓</button>
+          </div>
+          <div class="resource-item" id="r-28-2">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">Autoescola Online – Proteção Ambiental</span>
+              <span class="resource-type">Vídeo-aula gratuita</span>
+            </div>
+            <a href="https://www.autoescolaonline.net/video-aulas/" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-28-2','card-28')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 29/04 - Quarta REVISÃO -->
+    <div class="day-card" id="card-29">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Quarta-feira</span>
+          <span class="day-date">29/04</span>
+        </div>
+        <span class="day-badge badge-review">Revisão</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Revisão semana 3 + simulado completo</p>
+        <div class="resources">
+          <div class="resource-item" id="r-29-1">
+            <div class="resource-icon icon-sim">🎯</div>
+            <div class="resource-info">
+              <span class="resource-title">Simulado Geral 30 questões – EstudaCNH</span>
+              <span class="resource-type">Simulado gratuito</span>
+            </div>
+            <a href="https://www.estudacnh.com.br/simulado/detran" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-29-1','card-29')">✓</button>
+          </div>
+          <div class="resource-item" id="r-29-2">
+            <div class="resource-icon icon-sim">🎯</div>
+            <div class="resource-info">
+              <span class="resource-title">Simulado AprovaDETRAN – Completo</span>
+              <span class="resource-type">Banco atualizado</span>
+            </div>
+            <a href="https://www.aprovadetran.com.br/ctb" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-29-2','card-29')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ SEMANA 4: 30/04 a 04/05 ============ -->
+<section class="week-section" id="week-4">
+  <div class="week-header">
+    <div class="week-num">04</div>
+    <div class="week-info">
+      <h2>Revisão Final e Simulados</h2>
+      <p>30 de abril a 4 de maio · Últimos ajustes, simulados e prova oficial</p>
+    </div>
+  </div>
+  <div class="days-grid">
+
+    <!-- 30/04 - Quinta -->
+    <div class="day-card" id="card-30">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Quinta-feira</span>
+          <span class="day-date">30/04</span>
+        </div>
+        <span class="day-badge badge-review">Simulado</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Simulado completo + revisão de placas</p>
+        <div class="resources">
+          <div class="resource-item" id="r-30-1">
+            <div class="resource-icon icon-sim">🎯</div>
+            <div class="resource-info">
+              <span class="resource-title">Simulado Completo – EstudaCNH</span>
+              <span class="resource-type">30 questões · Gratuito</span>
+            </div>
+            <a href="https://www.estudacnh.com.br/simulado/detran" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-30-1','card-30')">✓</button>
+          </div>
+          <div class="resource-item" id="r-30-2">
+            <div class="resource-icon icon-sim">🎯</div>
+            <div class="resource-info">
+              <span class="resource-title">Simulado DETRAN 2026 – AprovaDETRAN</span>
+              <span class="resource-type">Banco atualizado</span>
+            </div>
+            <a href="https://www.aprovadetran.com.br/ctb" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-30-2','card-30')">✓</button>
+          </div>
+          <div class="resource-item" id="r-30-3">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">LegTransito – Revisão Completa Placas</span>
+              <span class="resource-type">Vídeo-aula · YouTube</span>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=legtransito+revis%C3%A3o+completa+placas+detran" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-30-3','card-30')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 01/05 - Sexta -->
+    <div class="day-card" id="card-01-05">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Sexta-feira</span>
+          <span class="day-date">01/05</span>
+        </div>
+        <span class="day-badge badge-review">Simulado</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Simulado completo + revisão de infrações</p>
+        <div class="resources">
+          <div class="resource-item" id="r-0105-1">
+            <div class="resource-icon icon-sim">🎯</div>
+            <div class="resource-info">
+              <span class="resource-title">Simulado Completo – Clube DETRAN</span>
+              <span class="resource-type">Questões variadas</span>
+            </div>
+            <a href="https://clubedetran.com.br/simulado-detran-primeiros-socorros/" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-0105-1','card-01-05')">✓</button>
+          </div>
+          <div class="resource-item" id="r-0105-2">
+            <div class="resource-icon icon-video">▶</div>
+            <div class="resource-info">
+              <span class="resource-title">LegTransito – Revisão Infrações e Penalidades</span>
+              <span class="resource-type">Vídeo-aula · YouTube</span>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=legtransito+infra%C3%A7%C3%B5es+revis%C3%A3o" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-0105-2','card-01-05')">✓</button>
+          </div>
+          <div class="resource-item" id="r-0105-3">
+            <div class="resource-icon icon-doc">📄</div>
+            <div class="resource-info">
+              <span class="resource-title">Tabela de Infrações Completa</span>
+              <span class="resource-type">Material de leitura</span>
+            </div>
+            <a href="https://cursosdetransito.com.br/2025/05/29/legislacao-transito-prova-detran/" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-0105-3','card-01-05')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02/05 - Sábado -->
+    <div class="day-card" id="card-02-05">
+      <div class="done-all-badge">✓ Concluído</div>
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Sábado</span>
+          <span class="day-date">02/05</span>
+        </div>
+        <span class="day-badge badge-review">Simulado</span>
+      </div>
+      <div class="day-card-body">
+        <p class="day-topic">Simulado final completo</p>
+        <div class="resources">
+          <div class="resource-item" id="r-0205-1">
+            <div class="resource-icon icon-sim">🎯</div>
+            <div class="resource-info">
+              <span class="resource-title">Simulado Final – EstudaCNH</span>
+              <span class="resource-type">30 questões</span>
+            </div>
+            <a href="https://www.estudacnh.com.br/simulado/detran" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-0205-1','card-02-05')">✓</button>
+          </div>
+          <div class="resource-item" id="r-0205-2">
+            <div class="resource-icon icon-sim">🎯</div>
+            <div class="resource-info">
+              <span class="resource-title">Simulado AprovaDETRAN – Final</span>
+              <span class="resource-type">Banco atualizado</span>
+            </div>
+            <a href="https://www.aprovadetran.com.br/ctb" target="_blank" class="resource-link" onclick="event.stopPropagation()">Abrir</a>
+            <button class="check-btn" onclick="toggleDone('r-0205-2','card-02-05')">✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03/05 - DOMINGO DESCANSO -->
+    <div class="day-card rest" id="card-03-05">
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Domingo</span>
+          <span class="day-date">03/05</span>
+        </div>
+        <span class="day-badge badge-rest">Descanso</span>
+      </div>
+      <div class="rest-msg">
+        <span class="rest-emoji">🧘</span>
+        Descanso antes da prova! Relaxe a mente.
+      </div>
+    </div>
+
+    <!-- 04/05 - PROVA -->
+    <div class="day-card exam-day" id="card-04-05">
+      <div class="day-card-top">
+        <div class="day-label">
+          <span class="day-weekday">Segunda-feira</span>
+          <span class="day-date">04/05</span>
+        </div>
+        <span class="day-badge badge-exam">🏁 Prova!</span>
+      </div>
+      <div class="exam-special">
+        <div class="exam-icon">🎯</div>
+        <div class="exam-title">Exame Teórico DETRAN</div>
+        <div class="exam-sub">30 questões · Mínimo 21 acertos · Boa sorte!</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <span>Cronograma CNH · DETRAN Bahia · Abril/Maio 2026</span>
+  <button class="reset-btn" onclick="resetAll()">Resetar progresso</button>
+</footer>
+
+<script>
+  const STORAGE_KEY = 'cnh_progress';
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+  }
+
+  function save(data) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function toggleDone(resourceId, cardId) {
+    const el = document.getElementById(resourceId);
+    const progress = load();
+    progress[resourceId] = !progress[resourceId];
+    save(progress);
+    if (el) el.classList.toggle('done', progress[resourceId]);
+    checkCard(cardId, progress);
+    updateProgressBar(progress);
+  }
+
+  function checkCard(cardId, progress) {
+    const card = document.getElementById(cardId);
+    if (!card) return;
+    const items = card.querySelectorAll('.resource-item[id]');
+    if (items.length === 0) return;
+    const allDone = Array.from(items).every(i => progress[i.id]);
+    card.classList.toggle('all-done', allDone);
+    card.classList.toggle('completed', allDone);
+  }
+
+  function updateProgressBar(progress) {
+    const all = document.querySelectorAll('.resource-item[id]');
+    const done = Array.from(all).filter(i => progress[i.id]).length;
+    const pct = all.length ? Math.round((done / all.length) * 100) : 0;
+    const fill = document.getElementById('progress-fill');
+    const text = document.getElementById('progress-text');
+    if (fill) fill.style.width = pct + '%';
+    if (text) text.textContent = done + ' / ' + all.length + ' concluídos';
+  }
+
+  function resetAll() {
+    if (!confirm('Tem certeza que deseja resetar todo o progresso?')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    document.querySelectorAll('.resource-item').forEach(el => el.classList.remove('done'));
+    document.querySelectorAll('.day-card').forEach(el => el.classList.remove('all-done', 'completed'));
+    updateProgressBar({});
+  }
+
+  function showWeek(num, btn) {
+    document.querySelectorAll('.week-section').forEach(s => s.classList.remove('visible'));
+    document.querySelectorAll('.week-tab').forEach(b => b.classList.remove('active'));
+    const week = document.getElementById('week-' + num);
+    if (week) week.classList.add('visible');
+    btn.classList.add('active');
+  }
+
+  // Init
+  (function init() {
+    const progress = load();
+    Object.keys(progress).forEach(id => {
+      if (!progress[id]) return;
+      const el = document.getElementById(id);
+      if (el) el.classList.add('done');
+    });
+    const cards = ['09','10','11','13','14','15','16','17','18','20','21','22','23','24','25','27','28','29','30','01-05','02-05'];
+    cards.forEach(d => checkCard('card-' + d, progress));
+    updateProgressBar(progress);
+  })();
+</script>
+</body>
+</html>
